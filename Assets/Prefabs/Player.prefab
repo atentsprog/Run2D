@@ -200,6 +200,10 @@ MonoBehaviour:
   gravityScale: 20
   speed: 20
   midAirVelocity: 10
+  referenceTransform: {fileID: 0}
+  defaultOffsetX: 0
+  restorePosSpeed: 2
+  allowPosX: 0.2
   rayStart: {fileID: 841015300}
   rayCheckDistance: 0.1
   groundLayer:

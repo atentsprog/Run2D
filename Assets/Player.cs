@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         rigid.gravityScale = gravityScale;
+        referenceTransform = Camera.main.transform;
+        defaultOffsetX = referenceTransform.position.x - transform.position.x;
     }
 
     public void OnStageEnd()
@@ -68,7 +70,36 @@ public class Player : MonoBehaviour
             }
         }
         animator.Play(animationName);
+
+
+
+        // X위치가 기준값보다 뒤쳐져 있다면 기준값 위치로 부드럽게 이동시키자.
+        float offset = GetInvalidOffsetXFromInitPos();
+        if (IsInvalidPosX(offset))
+        {
+            //if (IsGround() == false) // 점프중에만 이동시키려면 여기를 주석 풀자.
+            {
+                transform.Translate(offset * restorePosSpeed * Time.deltaTime, 0, 0);
+            }
+        }
     }
+
+
+    public Transform referenceTransform;
+    public float defaultOffsetX;
+    public float restorePosSpeed = 2f;
+    public float allowPosX = 0.2f;
+    float GetInvalidOffsetXFromInitPos()
+    {
+        float diff = referenceTransform.position.x - transform.position.x - defaultOffsetX;
+        float absDiff = Mathf.Abs(diff);
+        return absDiff;
+    }
+    private bool IsInvalidPosX(float absDiff)
+    {
+        return absDiff > allowPosX;
+    }
+
 
     public Transform rayStart;
     public float rayCheckDistance = 0.1f;
