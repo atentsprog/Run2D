@@ -15,12 +15,20 @@ public class Player : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         rigid.gravityScale = gravityScale;
-        animator.Play("Run");
     }
+
+    public void OnStageEnd()
+    {
+        animator.Play("Idle");
+    }
+
     public float speed = 20;
     public float midAirVelocity = 10;
     void Update()
     {
+        if (RunGameManager.instance.gameState != RunGameManager.GameStateType.Playing)
+            return;
+
         transform.Translate(speed * Time.deltaTime, 0, 0);
 
         if (Input.GetKeyDown(KeyCode.Space))

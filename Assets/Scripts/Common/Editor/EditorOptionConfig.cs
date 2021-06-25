@@ -16,9 +16,9 @@ public class EditorOptionConfig : EditorWindow
     void OnGUI()
     {
         mPos = GUILayout.BeginScrollView(mPos);
-        if(GUILayout.Button("테스트 버튼"))
+        if(GUILayout.Button("Copy Component Code"))
         {
-            Debug.Log("테스트 버튼 누름");
+            EditorUtil.CopyComponentPath();
         }
 
         for (OptionType i = OptionType.StartIndex + 1; i < OptionType.LastIndex; i++)

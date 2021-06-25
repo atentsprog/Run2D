@@ -8,5 +8,7 @@ public class CoinItem : MonoBehaviour
     {
         //Debug.Log("Coin Enter:" + collision.transform);
         GetComponentInChildren<Animator>().Play("HideCoin", 1);
+
+        RunGameManager.instance.Coin += 100;
     }
 }
