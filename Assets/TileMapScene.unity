@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 171366814}
   - component: {fileID: 171366813}
   - component: {fileID: 171366810}
+  - component: {fileID: 171366811}
   m_Layer: 0
   m_Name: MiniMapCamera
   m_TagString: MainCamera
@@ -154,6 +155,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
+--- !u!114 &171366811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171366809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f08a6f40d2ec4de981f811bfc829f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TexturePixelsPerWorldUnit: 2
 --- !u!20 &171366813
 Camera:
   m_ObjectHideFlags: 0
@@ -165,7 +179,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 3
   m_BackGroundColor: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 0}
-  m_projectionMatrixMode: 1
+  m_projectionMatrixMode: 0
   m_GateFitMode: 2
   m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
@@ -384,7 +398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 301818796100509864, guid: a0bd30fce26eb344595a74199b2d51f7, type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 301818796100509864, guid: a0bd30fce26eb344595a74199b2d51f7, type: 3}
       propertyPath: m_AnchorMax.x
@@ -461,10 +475,6 @@ PrefabInstance:
     - target: {fileID: 301818796100509868, guid: a0bd30fce26eb344595a74199b2d51f7, type: 3}
       propertyPath: m_Name
       value: Canvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 301818796100509868, guid: a0bd30fce26eb344595a74199b2d51f7, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0bd30fce26eb344595a74199b2d51f7, type: 3}
@@ -12209,7 +12219,7 @@ Transform:
   - {fileID: 1141822817}
   - {fileID: 1383668068}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1950442747
 PrefabInstance:
