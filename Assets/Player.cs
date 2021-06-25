@@ -37,6 +37,12 @@ public class Player : MonoBehaviour
             rigid.AddForce(jumpForce);
         }
 
+        //자석 효과 끄기/켜기 테스트
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            transform.Find("Magnet").gameObject.SetActive(false);
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            transform.Find("Magnet").gameObject.SetActive(true);
+
         float velocity = rigid.velocity.y;
         float absVelocity = Mathf.Abs(velocity);
         //float absVelocity = velocity > 0 ? velocity : -velocity;
