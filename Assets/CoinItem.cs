@@ -23,5 +23,8 @@ public class CoinItem : MonoBehaviour
         GetComponentInChildren<Animator>().Play("Hide", 1);
         RunGameManager.instance.AddCoin(100);
 
+        MagnetAbility.instance?.RemoveItem(transform);
+        Destroy(gameObject, destroyTime);
     }
+    public float destroyTime = 2;
 }

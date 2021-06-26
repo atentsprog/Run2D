@@ -5,11 +5,20 @@ using UnityEngine;
 
 public class MagnetAbility : MonoBehaviour
 {
+    public static MagnetAbility instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     class RefFloat
     {
         public float acc;
     }
     Dictionary<Transform, RefFloat> items = new Dictionary<Transform, RefFloat>(); //<자석에 이끌린 TR, 가속도>
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.GetComponent<CoinItem>() == null)
@@ -22,6 +31,12 @@ public class MagnetAbility : MonoBehaviour
     }
 
     public float accelerate = 30; // 초당 가속도.
+
+
+    internal void RemoveItem(Transform transform)
+    {
+        items.Remove(transform);
+    }
 
     private void Update()
     {
