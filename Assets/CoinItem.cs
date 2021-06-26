@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class CoinItem : MonoBehaviour
 {
-    bool isUse = false;
+    //bool isUse = false;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isUse)
-            return;
+        //if (isUse)
+        //    return;
 
         if (collision.transform.GetComponent<Player>() == null)
             return;
@@ -17,8 +17,11 @@ public class CoinItem : MonoBehaviour
         //    return;
         //if (collision.transform.CompareTag("Player") == false)
         //    return;
-         
-        isUse = true;
+
+        //isUse = true;
+
+        GetComponent<Collider2D>().enabled = false;
+
         //print(collision.transform);
         GetComponentInChildren<Animator>().Play("Hide", 1);
         RunGameManager.instance.AddCoin(100);
