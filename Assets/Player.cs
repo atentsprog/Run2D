@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
 
     public float speed = 20;
     public float midAirVelocity = 10;
+    [HideInInspector] int aireJumpCount = 0;
     void Update()
     {
         if (RunGameManager.IsPlaying() == false)
@@ -56,10 +57,15 @@ public class Player : MonoBehaviour
         transform.Translate(speed * Time.deltaTime, 0, 0);
 
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (aireJumpCount < 1) // 2단 점프중에는 다시 점프 안되도록 1단 점프이하에서만 점프 되게함
         {
-            rigid.velocity = Vector2.zero;
-            rigid.AddForce(jumpForce);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rigid.velocity = Vector2.zero;
+                rigid.AddForce(jumpForce);
+                if(IsAir())
+                    aireJumpCount++;
+            }
         }
 
         float velocity = rigid.velocity.y;
@@ -73,6 +79,7 @@ public class Player : MonoBehaviour
         string animationName = string.Empty;
         if (IsGround())
         {
+            aireJumpCount = 0;
             animationName = "Run";
         }
         else
@@ -98,6 +105,10 @@ public class Player : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(rayStart.position, Vector2.down, rayCheckDistance, groundLayer);
         return hit.transform != null;
+    }
+    bool IsAir()
+    {
+        return IsGround() == false;
     }
     private void OnDrawGizmos()
     {
