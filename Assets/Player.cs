@@ -5,45 +5,68 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Player instance;
     Animator animator;
     Rigidbody2D rigid;
     public Vector2 jumpForce = new Vector2(0, 1000);
     public float gravityScale = 7;
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    internal void OnEndStage()
+    {
+        animator.Play("Idle");
+    }
+
     void Start()
     {
         //animator = transform.Find("Sprite").GetComponent<Animator>();
         animator = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         rigid.gravityScale = gravityScale;
-        referenceTransform = Camera.main.transform;
-        defaultOffsetX = referenceTransform.position.x - transform.position.x;
+        cameraTr = Camera.main.transform;
+        offsetXCameraPos = cameraTr.position.x - transform.position.x;
+        // offsetXCameraPos : 3
+        //animator.Play("Run");
     }
 
-    public void OnStageEnd()
+    public Transform cameraTr;
+    public float offsetXCameraPos;  // 카메라와 나의 차이 기본값
+    public float allowOffsetX = 0.2f;
+    public float restoreSpeed = 40;
+    private void RestoreXPosition()
     {
-        animator.Play("Idle");
+        float offsetX = cameraTr.position.x - transform.position.x;
+        if(offsetX > offsetXCameraPos + allowOffsetX)
+        {
+            // 위치를 수정해야한다.
+            transform.Translate(restoreSpeed * Time.deltaTime, 0, 0);
+        }
     }
 
     public float speed = 20;
     public float midAirVelocity = 10;
+    [HideInInspector] int aireJumpCount = 0;
     void Update()
     {
-        if (RunGameManager.instance.gameState != RunGameManager.GameStateType.Playing)
+        if (RunGameManager.IsPlaying() == false)
             return;
 
         transform.Translate(speed * Time.deltaTime, 0, 0);
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            rigid.velocity = Vector2.zero;
-            rigid.AddForce(jumpForce);
-        }
 
-        //자석 효과 끄기/켜기 테스트
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            transform.Find("Magnet").gameObject.SetActive(false);
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            transform.Find("Magnet").gameObject.SetActive(true);
+        if (aireJumpCount < 1) // 2단 점프중에는 다시 점프 안되도록 1단 점프이하에서만 점프 되게함
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rigid.velocity = Vector2.zero;
+                rigid.AddForce(jumpForce);
+                if(IsAir())
+                    aireJumpCount++;
+            }
+        }
 
         float velocity = rigid.velocity.y;
         float absVelocity = Mathf.Abs(velocity);
@@ -56,6 +79,7 @@ public class Player : MonoBehaviour
         string animationName = string.Empty;
         if (IsGround())
         {
+            aireJumpCount = 0;
             animationName = "Run";
         }
         else
@@ -72,35 +96,8 @@ public class Player : MonoBehaviour
         animator.Play(animationName);
 
 
-
-        // X위치가 기준값보다 뒤쳐져 있다면 기준값 위치로 부드럽게 이동시키자.
-        float offset = GetInvalidOffsetXFromInitPos();
-        if (IsInvalidPosX(offset))
-        {
-            //if (IsGround() == false) // 점프중에만 이동시키려면 여기를 주석 풀자.
-            {
-                transform.Translate(offset * restorePosSpeed * Time.deltaTime, 0, 0);
-            }
-        }
+        RestoreXPosition();
     }
-
-
-    public Transform referenceTransform;
-    public float defaultOffsetX;
-    public float restorePosSpeed = 2f;
-    public float allowPosX = 0.2f;
-    float GetInvalidOffsetXFromInitPos()
-    {
-        float diff = referenceTransform.position.x - transform.position.x - defaultOffsetX;
-        float absDiff = Mathf.Abs(diff);
-        return absDiff;
-    }
-    private bool IsInvalidPosX(float absDiff)
-    {
-        return absDiff > allowPosX;
-    }
-
-
     public Transform rayStart;
     public float rayCheckDistance = 0.1f;
     public LayerMask groundLayer;
@@ -108,6 +105,10 @@ public class Player : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(rayStart.position, Vector2.down, rayCheckDistance, groundLayer);
         return hit.transform != null;
+    }
+    bool IsAir()
+    {
+        return IsGround() == false;
     }
     private void OnDrawGizmos()
     {

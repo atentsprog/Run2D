@@ -7,7 +7,7 @@ public class MoveCamera : MonoBehaviour
     public float speed = 20;
     void Update()
     {
-        if (RunGameManager.instance.gameState != RunGameManager.GameStateType.Playing)
+        if (RunGameManager.IsPlaying() == false)
             return;
 
         transform.Translate(speed * Time.deltaTime, 0, 0);

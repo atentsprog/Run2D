@@ -7,79 +7,50 @@ using UnityEngine;
 public class RunGameManager : MonoBehaviour
 {
     public static RunGameManager instance;
-    TextMeshProUGUI startText;
-    Animator startTextAnimator;
-
-    internal void StageEnd()
-    {
-        gameState = GameStateType.End;
-        startText.text = "Clear!";
-        startTextAnimator.Play("ShowText");
-        SetEnableMoveCameras(false);
-        player.OnStageEnd();
-    }
-    public float cameraSpeed = 20;
-    void SetEnableMoveCameras(bool state)
-    {
-        float speed = state ? cameraSpeed : 0;
-        moveCameras.ForEach(x => x.speed = speed);
-        player.speed = speed;
-    }
-
-    TextMeshProUGUI pointText;
-
-    public int waitSeconds = 2;
-    public float delayHideText = 1;
-
-
-    int coin;
-    public int Coin
-    {
-        get
-        {
-            return coin;
-        }
-        set { coin = value;
-            UpdateCoinTest(coin);
-        }
-    }
-
-
-    private void UpdateCoinTest(int coin)
-    {
-        pointText.text = coin.ToNumber();
-    }
-
     private void Awake()
     {
         instance = this;
     }
-    List<MoveCamera> moveCameras;
-    Player player;
+
+    internal void EndStage()
+    {
+        gameStateType = GameStateType.End;
+        Player.instance.OnEndStage();
+        timeText.text = "Clear";
+    }
+
+    TextMeshProUGUI timeText;
+    TextMeshProUGUI pointText;
+    public int waitSeconds = 3;
+
+    [SerializeField] int point;
+    internal void AddCoin(int addPoint)
+    {
+        point += addPoint;
+        pointText.text = point.ToString();
+    }
+
     IEnumerator Start()
     {
-        gameState = GameStateType.Ready;
-        moveCameras = new List<MoveCamera>(FindObjectsOfType<MoveCamera>());
-        player = FindObjectOfType<Player>();
-        
-        startText = transform.Find("StartText").GetComponent<TextMeshProUGUI>();
-        pointText = transform.Find("PointText").GetComponent<TextMeshProUGUI>();
-        startTextAnimator = startText.GetComponent<Animator>();
-
+        // 캐릭터랑 카메라랑 뭠춰야한다.
+        gameStateType = GameStateType.Ready;
+        timeText = transform.Find("TimeText").GetComponent<TextMeshProUGUI>();// 3,2,1, Start표시.
+        pointText = transform.Find("PointText").GetComponent<TextMeshProUGUI>();// 획득한 코인 표시
         for (int i = waitSeconds; i > 0; i--)
         {
-            startText.text = i.ToString();
-            startTextAnimator.Play("ShowText");
+            timeText.text = i.ToString();
             yield return new WaitForSeconds(1);
         }
-        startTextAnimator.Play("ShowText");
-        startText.text = "Start!";
-
-        gameState = GameStateType.Playing;
-        yield return new WaitForSeconds(delayHideText);
-        startTextAnimator.Play("HideText");
+        timeText.text = "Start";
+        gameStateType = GameStateType.Playing;
+        yield return new WaitForSeconds(0.5f);
+        timeText.text = "";
     }
-    public GameStateType gameState = GameStateType.NotInit;
+    internal static bool IsPlaying()
+    {
+        return instance.gameStateType == GameStateType.Playing;
+    }
+    public GameStateType gameStateType = GameStateType.NotInit;
     public enum GameStateType
     {
         NotInit,
@@ -87,4 +58,7 @@ public class RunGameManager : MonoBehaviour
         Playing,
         End,
     }
+    // 게임시작전인지?
+    /// 게임중인지?
+    /// // 끝났는지?
 }
